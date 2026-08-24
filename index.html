@@ -551,7 +551,7 @@ function SkinRoutineApp() {
     title: "Rutinitas Pagi",
     subtitle: "Proteksi & Segarkan Kulit",
     badgeColor: "bg-amber-50 text-amber-700 border-amber-200",
-    icon: "ΓÿÇ∩╕Å",
+    icon: "☀️",
     steps: morningSteps,
     doneCount: morningDoneCount,
     onToggle: toggleStep,
@@ -561,7 +561,7 @@ function SkinRoutineApp() {
     title: "Rutinitas Malam",
     subtitle: "Pembersihan & Deep Repair",
     badgeColor: "bg-indigo-50 text-indigo-700 border-indigo-200",
-    icon: "≡ƒîÖ",
+    icon: "🌙",
     steps: nightSteps,
     doneCount: nightDoneCount,
     onToggle: toggleStep,
@@ -571,7 +571,7 @@ function SkinRoutineApp() {
     className: "rounded-[20px] bg-[#F0FBFB] border border-[#00ACC1]/20 p-4 flex gap-3 items-start"
   }, /*#__PURE__*/React.createElement("div", {
     className: "w-8 h-8 rounded-full bg-[#00ACC1] text-white flex items-center justify-center font-bold text-sm shrink-0"
-  }, "≡ƒÆí"), /*#__PURE__*/React.createElement("div", {
+  }, "💡"), /*#__PURE__*/React.createElement("div", {
     className: "text-[12px] leading-relaxed"
   }, /*#__PURE__*/React.createElement("div", {
     className: "font-extrabold text-[#111D20]"
@@ -669,10 +669,10 @@ function SkinRoutineApp() {
   }, p.when), /*#__PURE__*/React.createElement("button", {
     onClick: () => handleEditProduct(p),
     className: "text-xs text-black/40 hover:text-black/80 px-1.5 py-0.5"
-  }, "Γ£Å∩╕Å"), /*#__PURE__*/React.createElement("button", {
+  }, "✏️"), /*#__PURE__*/React.createElement("button", {
     onClick: () => handleDeleteProduct(p.id),
     className: "text-xs text-red-400 hover:text-red-600 px-1 py-0.5"
-  }, "≡ƒùæ∩╕Å"))), /*#__PURE__*/React.createElement("h3", {
+  }, "🗑️"))), /*#__PURE__*/React.createElement("h3", {
     className: "text-[14px] font-extrabold text-[#111D20] mt-1"
   }, p.brand ? `${p.brand} ${p.name}` : p.name), /*#__PURE__*/React.createElement("p", {
     className: "text-[11.5px] text-black/60 mt-0.5 leading-relaxed"
@@ -697,7 +697,7 @@ function SkinRoutineApp() {
     className: "rounded-[22px] bg-[#E8F9FB] border border-[#00ACC1]/20 p-4 flex gap-3 items-start"
   }, /*#__PURE__*/React.createElement("div", {
     className: "w-10 h-10 rounded-full bg-white text-[#00ACC1] flex items-center justify-center font-bold text-lg shadow-sm shrink-0"
-  }, "≡ƒÆº"), /*#__PURE__*/React.createElement("div", {
+  }, "💧"), /*#__PURE__*/React.createElement("div", {
     className: "text-[12px] leading-relaxed"
   }, /*#__PURE__*/React.createElement("div", {
     className: "font-extrabold text-[#111D20]"
@@ -724,22 +724,22 @@ function SkinRoutineApp() {
   }, /*#__PURE__*/React.createElement(NavItem, {
     active: activeTab === "today",
     onClick: () => setActiveTab("today"),
-    icon: "ΓÿÇ∩╕Å",
+    icon: "☀️",
     label: "Hari Ini"
   }), /*#__PURE__*/React.createElement(NavItem, {
     active: activeTab === "schedule",
     onClick: () => setActiveTab("schedule"),
-    icon: "≡ƒôà",
+    icon: "📅",
     label: "Jadwal"
   }), /*#__PURE__*/React.createElement(NavItem, {
     active: activeTab === "collection",
     onClick: () => setActiveTab("collection"),
-    icon: "≡ƒº¬",
+    icon: "🧪",
     label: "Skincareku"
   }), /*#__PURE__*/React.createElement(NavItem, {
     active: activeTab === "tips",
     onClick: () => setActiveTab("tips"),
-    icon: "≡ƒÆí",
+    icon: "💡",
     label: "Tips"
   }))), isModalOpen && /*#__PURE__*/React.createElement("div", {
     className: "fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4"
@@ -752,7 +752,7 @@ function SkinRoutineApp() {
   }, editingProduct ? "Ubah Skincare" : "Tambah Skincare Baru"), /*#__PURE__*/React.createElement("button", {
     onClick: () => setIsModalOpen(false),
     className: "w-7 h-7 rounded-full bg-black/5 flex items-center justify-center text-xs font-bold text-black/60"
-  }, "Γ£ò")), /*#__PURE__*/React.createElement("form", {
+  }, "✕")), /*#__PURE__*/React.createElement("form", {
     onSubmit: handleSaveProduct,
     className: "space-y-3 text-[12px]"
   }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
@@ -877,7 +877,7 @@ function RoutineBlock({
       className: `w-full text-left rounded-[16px] border px-3.5 py-3 flex items-center gap-3 transition-all cursor-pointer ${checked ? 'bg-[#F0FBFB] border-[#00ACC1]/30 opacity-75' : 'bg-white border-black/[0.05] hover:border-black/15'}`
     }, /*#__PURE__*/React.createElement("div", {
       className: `w-6 h-6 rounded-full border flex items-center justify-center shrink-0 transition-colors ${checked ? 'bg-[#00ACC1] border-[#00ACC1] text-white' : 'bg-white border-black/20'}`
-    }, checked ? 'Γ£ô' : ''), /*#__PURE__*/React.createElement("div", {
+    }, checked ? '✓' : ''), /*#__PURE__*/React.createElement("div", {
       className: "flex-1 min-w-0"
     }, /*#__PURE__*/React.createElement("div", {
       className: `text-[13px] font-bold leading-tight flex items-center gap-2 ${checked ? 'line-through text-black/50' : 'text-[#111D20]'}`
