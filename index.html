@@ -305,6 +305,7 @@ function SkinRoutineApp() {
 
   // Modal State for Adding/Editing Skincare
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAboutOpen, setIsAboutOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
   const [formData, setFormData] = useState({
     brand: "",
@@ -513,10 +514,14 @@ function SkinRoutineApp() {
     month: "short",
     year: "numeric"
   })))), /*#__PURE__*/React.createElement("div", {
-    className: "text-right"
+    className: "text-right flex items-center gap-2"
   }, /*#__PURE__*/React.createElement("div", {
     className: "text-[11px] font-bold text-[#00ACC1] bg-[#00ACC1]/15 px-3 py-1 rounded-full border border-[#00ACC1]/30"
-  }, overallPercent, "% Selesai"))), /*#__PURE__*/React.createElement("main", {
+  }, overallPercent, "% Selesai"), /*#__PURE__*/React.createElement("button", {
+    onClick: () => setIsAboutOpen(true),
+    className: "w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 text-white/90 flex items-center justify-center text-xs font-bold transition-all active:scale-95",
+    title: "Tentang Aplikasi"
+  }, "ℹ️"))), /*#__PURE__*/React.createElement("main", {
     className: "flex-1 p-4 space-y-5"
   }, activeTab === "today" && /*#__PURE__*/React.createElement("div", {
     className: "space-y-4"
@@ -717,7 +722,38 @@ function SkinRoutineApp() {
     index: "3",
     title: "Beri Jeda 60 Detik",
     desc: "Beri jeda 1 menit antar tahapan skincare agar bahan aktif menyerap sempurna tanpa pilling."
-  })))), /*#__PURE__*/React.createElement("nav", {
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "rounded-[22px] bg-gradient-to-br from-[#111D20] to-[#1A2E35] text-white p-5 shadow-lg border border-white/10 mt-6"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-3"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "w-12 h-12 rounded-2xl bg-[#00ACC1]/20 border border-[#00ACC1]/40 flex items-center justify-center p-2"
+  }, /*#__PURE__*/React.createElement("img", {
+    src: "Icon App.png",
+    alt: "SkinRoutine Logo",
+    className: "w-full h-full object-contain rounded-xl"
+  })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-2"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "font-extrabold text-[16px] text-white"
+  }, "Skin", /*#__PURE__*/React.createElement("span", {
+    className: "text-[#00ACC1]"
+  }, "Routine")), /*#__PURE__*/React.createElement("span", {
+    className: "text-[10px] font-black bg-[#00ACC1] text-white px-2 py-0.5 rounded-full"
+  }, "v1.0")), /*#__PURE__*/React.createElement("p", {
+    className: "text-[11.5px] text-white/60 mt-0.5"
+  }, "Smart Routine & Skincare Tracker"))), /*#__PURE__*/React.createElement("div", {
+    className: "mt-4 pt-3 border-t border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "text-[12px] text-white/80"
+  }, "Made with ❤️ by ", /*#__PURE__*/React.createElement("strong", {
+    className: "text-white"
+  }, "Buildboxstudio")), /*#__PURE__*/React.createElement("a", {
+    href: "https://www.instagram.com/buildbox.studio/",
+    target: "_blank",
+    rel: "noopener noreferrer",
+    className: "inline-flex items-center justify-center gap-2 bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#FCB045] text-white text-[11.5px] font-bold px-3.5 py-2 rounded-xl shadow transition-all hover:opacity-95 active:scale-95"
+  }, /*#__PURE__*/React.createElement("span", null, "📸"), " Instagram @buildbox.studio"))))), /*#__PURE__*/React.createElement("nav", {
     className: "fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] z-40 bg-[#111D20] border-t border-white/10 px-3 py-2"
   }, /*#__PURE__*/React.createElement("div", {
     className: "flex items-center justify-around"
@@ -837,7 +873,41 @@ function SkinRoutineApp() {
   }, "Batal"), /*#__PURE__*/React.createElement("button", {
     type: "submit",
     className: "px-5 py-2 rounded-xl bg-[#00ACC1] text-white font-extrabold shadow-md hover:bg-[#0097A7]"
-  }, "Simpan Produk"))))));
+  }, "Simpan Produk"))))), isAboutOpen && /*#__PURE__*/React.createElement("div", {
+    className: "fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-white w-full max-w-sm rounded-[28px] p-6 shadow-2xl space-y-4 text-center relative animate-in fade-in zoom-in duration-200"
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: () => setIsAboutOpen(false),
+    className: "absolute top-4 right-4 w-8 h-8 rounded-full bg-black/5 hover:bg-black/10 flex items-center justify-center text-sm font-bold text-black/60"
+  }, "✕"), /*#__PURE__*/React.createElement("div", {
+    className: "w-16 h-16 mx-auto rounded-2xl bg-[#00ACC1]/10 border border-[#00ACC1]/30 p-2 shadow-inner"
+  }, /*#__PURE__*/React.createElement("img", {
+    src: "Icon App.png",
+    alt: "SkinRoutine Logo",
+    className: "w-full h-full object-contain rounded-xl"
+  })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
+    className: "text-[20px] font-black text-[#111D20] tracking-tight"
+  }, "Skin", /*#__PURE__*/React.createElement("span", {
+    className: "text-[#00ACC1]"
+  }, "Routine")), /*#__PURE__*/React.createElement("div", {
+    className: "inline-block mt-1 bg-[#00ACC1]/10 text-[#00ACC1] text-[11px] font-black px-3 py-1 rounded-full border border-[#00ACC1]/20"
+  }, "Versi 1.0 (v1.0)")), /*#__PURE__*/React.createElement("p", {
+    className: "text-[12px] text-black/60 leading-relaxed px-2"
+  }, "Aplikasi pendamping cerdas untuk mencatat, menjadwalkan, dan merawat kulit sehatmu setiap hari."), /*#__PURE__*/React.createElement("div", {
+    className: "bg-gray-50 rounded-2xl p-3 border border-black/5 text-left space-y-1 text-[11.5px]"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "text-black/50 font-medium"
+  }, "Developer & Creator:"), /*#__PURE__*/React.createElement("div", {
+    className: "font-extrabold text-[#111D20] text-[13px]"
+  }, "Buildboxstudio")), /*#__PURE__*/React.createElement("div", {
+    className: "pt-2"
+  }, /*#__PURE__*/React.createElement("a", {
+    href: "https://www.instagram.com/buildbox.studio/",
+    target: "_blank",
+    rel: "noopener noreferrer",
+    className: "w-full inline-flex items-center justify-center gap-2 bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#FCB045] text-white text-[12.5px] font-extrabold py-3 rounded-2xl shadow-lg transition-all active:scale-98"
+  }, /*#__PURE__*/React.createElement("span", null, "📸"), " Kunjungi Instagram @buildbox.studio")))));
 }
 
 // Helper Component Routine Block
