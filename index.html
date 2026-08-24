@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>SkinRoutine - Smart Skincare Routine & Tracker</title>
+  
+  <!-- PWA & Mobile Meta -->
+  <meta name="theme-color" content="#00ACC1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="SkinRoutine">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" href="Icon App.png">
+  <link rel="apple-touch-icon" href="Icon App.png">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: '#00ACC1',
+            brandDark: '#111D20',
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- React & ReactDOM -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #F4F7F8;
+      color: #111D20;
+      -webkit-tap-highlight-color: transparent;
+    }
+    
+    /* Custom focus-visible styling */
+    button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+      outline: 2px solid #00ACC1;
+      outline-offset: 2px;
+    }
+
+    /* Custom scrollbars */
+    ::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(0, 172, 193, 0.2);
+      border-radius: 4px;
+    }
+
+    /* Splash Screen Animation */
+    #splash-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      background: #111D20;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+    #splash-screen.fade-out {
+      opacity: 0;
+      visibility: hidden;
+    }
+  </style>
+</head>
+<body class="antialiased min-h-screen pb-24 md:pb-6">
+
+  <!-- Splash / Loading Screen -->
+  <div id="splash-screen">
+    <div class="relative flex flex-col items-center">
+      <img src="Loading Animation.gif" alt="Loading SkinRoutine" class="w-32 h-32 object-contain rounded-2xl mb-4 shadow-xl">
+      <div class="flex items-center gap-2 mt-2">
+        <img src="Icon App.png" alt="SkinRoutine Logo" class="w-6 h-6 rounded-md">
+        <h1 class="text-white font-extrabold text-2xl tracking-tight">Skin<span class="text-[#00ACC1]">Routine</span></h1>
+      </div>
+      <p class="text-white/60 text-xs mt-1 font-medium">Merawat Kulit Lebih Cerdas & Teratur</p>
+    </div>
+  </div>
+
+  <!-- React App Root -->
+  <div id="root"></div>
+
+  <!-- React Application Logic -->
+  <script type="text/babel">
+    const { useState, useEffect, useMemo } = React;
+
+    // Pre-configured Ingredient Auto-Routine Database
+    const INGREDIENT_RULES = [
+      { name: "Retinol / Retinoid", when: "Malam", category: "Exfoliant / Anti-Aging", desc: "Regenerasi kulit. Gunakan malam hari saja untuk menghindari fotosensitif." },
+      { name: "AHA (Glycolic / Lactic Acid)", when: "Malam", category: "Exfoliant", desc: "Angkat sel kulit mati permukaan. Pakai malam hari & wajib sunscreen pagi." },
+      { name: "BHA / Salicylic Acid", when: "Malam", category: "Exfoliant / Acne Care", desc: "Bersihkan pori tersumbat & jerawat. Disarankan malam hari." },
+      { name: "Benzoyl Peroxide", when: "Malam", category: "Acne Spot", desc: "Membunuh bakteri jerawat. Lebih disarankan malam hari." },
+      { name: "Vitamin C / Ascorbic Acid", when: "Pagi", category: "Antioxidant / Brightening", desc: "Melindungi dari radikal bebas & mencerahkan. Sangat efektif digunakan pagi hari bersama Sunscreen." },
+      { name: "Sunscreen / SPF Factor", when: "Pagi", category: "UV Protection", desc: "Pelindung sinar UV. Wajib dipakai setiap pagi & siang." },
+      { name: "Niacinamide", when: "Pagi & Malam", category: "Barrier / Brightening", desc: "Kontrol sebum & cerahkan noda. Aman dipakai pagi dan malam." },
+      { name: "Hyaluronic Acid", when: "Pagi & Malam", category: "Hydration", desc: "Menjaga kelembapan kulit. Bebas dipakai kapan saja." },
+      { name: "Ceramide", when: "Pagi & Malam", category: "Barrier Repair", desc: "Memperbaiki & memperkuat skin barrier." },
+      { name: "Centella Asiatica (Cica)", when: "Pagi & Malam", category: "Soothing", desc: "Menenangkan kulit kemerahan & iritasi." },
+      { name: "Alpha Arbutin", when: "Pagi & Malam", category: "Brightening", desc: "Samarkan flek hitam & noda bekas jerawat." },
+      { name: "Azelaic Acid", when: "Pagi & Malam", category: "Acne / Rosacea", desc: "Meredakan jerawat & meratakan warna kulit." },
+      { name: "Peptide / Collagen Booster", when: "Pagi & Malam", category: "Anti-Aging", desc: "Menjaga elastisitas & kekencangan kulit." },
+      { name: "Snail Mucin", when: "Pagi & Malam", category: "Hydration & Repair", desc: "Melembapkan & meredakan bekas luka jerawat." },
+      { name: "Lainnya / Custom", when: "Pagi & Malam", category: "General", desc: "Dapat disesuaikan sesuai kebutuhan produk." }
+    ];
+
+    // Default Products Catalog
+    const DEFAULT_PRODUCTS = [
+      { id: "p1", brand: "Somethinc", name: "Power MiniPore Serum", ingredient: "BHA / Salicylic Acid", color: "#FF8A4C", light: "#FFF3EB", usage: "Setiap Hari", desc: "Kontrol minyak & samarkan pori", when: "Pagi & Malam" },
+      { id: "p2", brand: "Avoskin", name: "Miraculous Refining Serum", ingredient: "AHA (Glycolic / Lactic Acid)", color: "#5B8DEF", light: "#EFF4FF", usage: "2x Seminggu", desc: "Angkat sel mati & komedo", when: "Malam" },
+      { id: "p3", brand: "Skintific", name: "Gentle A-Retinol Serum", ingredient: "Retinol / Retinoid", color: "#FF5A65", light: "#FFF0F1", usage: "2x Seminggu", desc: "Haluskan tekstur & cegah aging", when: "Malam" },
+      { id: "p4", brand: "COSRX", name: "AC Collection BHA Serum", ingredient: "Benzoyl Peroxide", color: "#FF7EB8", light: "#FFF0F6", usage: "3x Seminggu", desc: "Kempeskan jerawat aktif", when: "Malam" },
+      { id: "p5", brand: "The Originote", name: "Ceramella Barrier Serum", ingredient: "Ceramide", color: "#14C8B8", light: "#E6FAF8", usage: "Setiap Malam", desc: "Perkuat barrier berminyak sensitif", when: "Pagi & Malam" },
+      { id: "p6", brand: "Azarine", name: "C-White Lightening Serum", ingredient: "Vitamin C / Ascorbic Acid", color: "#6ECFE2", light: "#E8F8FB", usage: "Setiap Pagi", desc: "Cerahkan noda bekas jerawat & proteksi", when: "Pagi" }
+    ];
+
+    // Weekly Routine Schedule
+    const WEEKLY_SCHEDULE = [
+      { id: 0, label: "Minggu", focus: "Reset + Retinol", vibe: "Malam retinol, kulit istirahat total", morningSerums: ["p6", "p1"], nightSerums: ["p3", "p5"] },
+      { id: 1, label: "Senin", focus: "Exfoliasi Ringan", vibe: "Angkat minyak weekend, pori bersih", morningSerums: ["p6", "p1"], nightSerums: ["p2", "p5"] },
+      { id: 2, label: "Selasa", focus: "Anti Acne Care", vibe: "Fokus kempeskan jerawat & redakan peradangan", morningSerums: ["p6", "p1"], nightSerums: ["p4", "p5"] },
+      { id: 3, label: "Rabu", focus: "Retinol Glow", vibe: "Tekstur halus, tingkatkan regenerasi sel", morningSerums: ["p6", "p1"], nightSerums: ["p3", "p5"] },
+      { id: 4, label: "Kamis", focus: "Hydration & Barrier", vibe: "Fokus calming, perkuat pertahanan kulit", morningSerums: ["p6", "p1"], nightSerums: ["p5"] },
+      { id: 5, label: "Jumat", focus: "Exfoliasi Deep Clean", vibe: "Bersihkan komedo menyumbat sebelum weekend", morningSerums: ["p6", "p1"], nightSerums: ["p2", "p5"] },
+      { id: 6, label: "Sabtu", focus: "Gentle Spot Care", vibe: "Perawatan santai weekend & hidrasi", morningSerums: ["p6", "p1"], nightSerums: ["p4", "p5"] }
+    ];
+
+    const DAYS_MAP = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+
+    function SkinRoutineApp() {
+      const [activeTab, setActiveTab] = useState("today");
+      const [products, setProducts] = useState(() => {
+        try {
+          const saved = localStorage.getItem("skinroutine_products");
+          return saved ? JSON.parse(saved) : DEFAULT_PRODUCTS;
+        } catch(e) {
+          return DEFAULT_PRODUCTS;
+        }
+      });
+      const [completedSteps, setCompletedSteps] = useState(() => {
+        try {
+          const saved = localStorage.getItem("skinroutine_completed_v1");
+          return saved ? new Set(JSON.parse(saved)) : new Set();
+        } catch(e) {
+          return new Set();
+        }
+      });
+
+      // Modal State for Adding/Editing Skincare
+      const [isModalOpen, setIsModalOpen] = useState(false);
+      const [editingProduct, setEditingProduct] = useState(null);
+      const [formData, setFormData] = useState({
+        brand: "",
+        name: "",
+        ingredient: INGREDIENT_RULES[0].name,
+        when: INGREDIENT_RULES[0].when,
+        usage: "Setiap Hari",
+        desc: "",
+        color: "#00ACC1",
+        light: "#E8F8FB"
+      });
+
+      // Hide Splash Screen on mount
+      useEffect(() => {
+        const timer = setTimeout(() => {
+          const splash = document.getElementById("splash-screen");
+          if (splash) splash.classList.add("fade-out");
+        }, 1200);
+        return () => clearTimeout(timer);
+      }, []);
+
+      // Persist products
+      useEffect(() => {
+        try {
+          localStorage.setItem("skinroutine_products", JSON.stringify(products));
+        } catch(e) {}
+      }, [products]);
+
+      // Persist completed steps
+      useEffect(() => {
+        try {
+          localStorage.setItem("skinroutine_completed_v1", JSON.stringify(Array.from(completedSteps)));
+        } catch(e) {}
+      }, [completedSteps]);
+
+      // Today Date Info
+      const todayDate = useMemo(() => new Date(), []);
+      const dayIndex = todayDate.getDay();
+      const dayName = DAYS_MAP[dayIndex];
+      const todaySchedule = WEEKLY_SCHEDULE.find(s => s.id === dayIndex) || WEEKLY_SCHEDULE[0];
+      const dateString = todayDate.toISOString().split("T")[0]; // YYYY-MM-DD
+
+      // Toggle step completion
+      const toggleStep = (stepKey) => {
+        setCompletedSteps(prev => {
+          const next = new Set(prev);
+          const fullKey = `${dateString}_${stepKey}`;
+          if (next.has(fullKey)) {
+            next.delete(fullKey);
+          } else {
+            next.add(fullKey);
+          }
+          return next;
+        });
+      };
+
+      const isStepDone = (stepKey) => {
+        return completedSteps.has(`${dateString}_${stepKey}`);
+      };
+
+      // Ingredient selection handler with smart auto routine detection
+      const handleIngredientChange = (selectedIngredient) => {
+        const rule = INGREDIENT_RULES.find(r => r.name === selectedIngredient);
+        const autoWhen = rule ? rule.when : "Pagi & Malam";
+        setFormData(prev => ({
+          ...prev,
+          ingredient: selectedIngredient,
+          when: autoWhen
+        }));
+      };
+
+      // Save product handler
+      const handleSaveProduct = (e) => {
+        e.preventDefault();
+        if (!formData.name.trim()) return;
+
+        if (editingProduct) {
+          setProducts(prev => prev.map(p => p.id === editingProduct.id ? { ...p, ...formData } : p));
+        } else {
+          const newProduct = {
+            id: "custom_" + Date.now(),
+            ...formData
+          };
+          setProducts(prev => [...prev, newProduct]);
+        }
+
+        setIsModalOpen(false);
+        setEditingProduct(null);
+        setFormData({
+          brand: "",
+          name: "",
+          ingredient: INGREDIENT_RULES[0].name,
+          when: INGREDIENT_RULES[0].when,
+          usage: "Setiap Hari",
+          desc: "",
+          color: "#00ACC1",
+          light: "#E8F8FB"
+        });
+      };
+
+      // Open Edit Modal
+      const handleEditProduct = (prod) => {
+        setEditingProduct(prod);
+        setFormData({
+          brand: prod.brand || "",
+          name: prod.name || "",
+          ingredient: prod.ingredient || INGREDIENT_RULES[0].name,
+          when: prod.when || "Pagi & Malam",
+          usage: prod.usage || "Setiap Hari",
+          desc: prod.desc || "",
+          color: prod.color || "#00ACC1",
+          light: prod.light || "#E8F8FB"
+        });
+        setIsModalOpen(true);
+      };
+
+      // Delete Product
+      const handleDeleteProduct = (id) => {
+        if (confirm("Apakah kamu yakin ingin menghapus produk ini?")) {
+          setProducts(prev => prev.filter(p => p.id !== id));
+        }
+      };
+
+      // Reset Catalog to Defaults
+      const handleResetProducts = () => {
+        if (confirm("Kembalikan katalog ke produk awal?")) {
+          setProducts(DEFAULT_PRODUCTS);
+        }
+      };
+
+      // Morning & Night steps setup
+      const morningSteps = [
+        { key: "m_cleanser", label: "Gentle Facial Wash", note: "Busa lembut, bilas air hangat/dingin" },
+        { key: "m_toner", label: "Hydrating Toner / Essence", note: "Tepuk-tepuk lembut untuk menyiapkan kulit" },
+        ...todaySchedule.morningSerums.map(pid => {
+          const prod = products.find(p => p.id === pid);
+          return {
+            key: `m_serum_${pid}`,
+            label: prod ? `${prod.brand ? prod.brand + ' ' : ''}${prod.name}` : "Serum Pagi",
+            note: prod ? prod.desc : "Ratakan 2-3 tetes",
+            serumId: pid
+          };
+        }),
+        { key: "m_moisturizer", label: "Moisturizer Gel / Light Cream", note: "Kunci kelembapan tanpa minyak berlebih" },
+        { key: "m_sunscreen", label: "Sunscreen SPF 50+ PA++++", note: "Wajib 2 ruas jari & reapply tiap 3 jam" }
+      ];
+
+      const nightSteps = [
+        { key: "n_cleanser1", label: "First Cleanser (Micellar/Balm)", note: "Angkat kotoran, minyak & sunscreen" },
+        { key: "n_cleanser2", label: "Second Cleanser (Facial Wash)", note: "Pembersihan mendalam" },
+        { key: "n_toner", label: "Hydrating Toner", note: "Balut kelembapan setelah cuci muka" },
+        ...todaySchedule.nightSerums.map(pid => {
+          const prod = products.find(p => p.id === pid);
+          return {
+            key: `n_serum_${pid}`,
+            label: prod ? `${prod.brand ? prod.brand + ' ' : ''}${prod.name}` : "Serum Malam",
+            note: prod ? prod.desc : "Ratakan 2-3 tetes",
+            serumId: pid
+          };
+        }),
+        { key: "n_moisturizer", label: "Barrier Moisturizer Cream", note: "Proteksi barrier & kuncian regenerasi malam" }
+      ];
+
+      const morningDoneCount = morningSteps.filter(s => isStepDone(s.key)).length;
+      const nightDoneCount = nightSteps.filter(s => isStepDone(s.key)).length;
+      const totalSteps = morningSteps.length + nightSteps.length;
+      const totalDone = morningDoneCount + nightDoneCount;
+      const overallPercent = Math.round((totalDone / totalSteps) * 100);
+
+      return (
+        <div class="max-w-[480px] mx-auto min-h-screen flex flex-col bg-white shadow-2xl relative border-x border-black/5">
+          
+          <!-- App Top Header -->
+          <header class="sticky top-0 z-40 bg-[#111D20] text-white px-5 py-4 flex items-center justify-between shadow-md">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-[#00ACC1]/20 border border-[#00ACC1]/40 flex items-center justify-center p-1.5 shadow-inner">
+                <img src="Icon App.png" alt="SkinRoutine Logo" class="w-full h-full object-contain rounded-lg">
+              </div>
+              <div>
+                <h1 class="text-[18px] font-extrabold tracking-tight leading-none text-white">
+                  Skin<span class="text-[#00ACC1]">Routine</span>
+                </h1>
+                <p class="text-[11px] text-white/60 mt-1 font-medium flex items-center gap-1">
+                  <span class="w-2 h-2 rounded-full bg-emerald-400 inline-block animate-pulse"></span>
+                  {dayName}, {todayDate.toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })}
+                </p>
+              </div>
+            </div>
+            
+            <div class="text-right">
+              <div class="text-[11px] font-bold text-[#00ACC1] bg-[#00ACC1]/15 px-3 py-1 rounded-full border border-[#00ACC1]/30">
+                {overallPercent}% Selesai
+              </div>
+            </div>
+          </header>
+
+          <!-- Main Content Area -->
+          <main class="flex-1 p-4 space-y-5">
+            
+            {/* TAB 1: HARI INI (TODAY ROUTINE) */}
+            {activeTab === "today" && (
+              <div class="space-y-4">
+                
+                {/* Daily Focus Card */}
+                <div class="rounded-[22px] bg-gradient-to-br from-[#111D20] to-[#1A2E35] text-white p-4 shadow-lg border border-white/10 relative overflow-hidden">
+                  <div class="absolute -right-6 -bottom-6 w-24 h-24 bg-[#00ACC1]/20 rounded-full blur-xl pointer-events-none"></div>
+                  <div class="flex items-center justify-between mb-2">
+                    <span class="text-[10px] font-extrabold tracking-widest uppercase bg-[#00ACC1] text-white px-2.5 py-0.5 rounded-full">
+                      Fokus Hari Ini
+                    </span>
+                    <span class="text-[11px] text-white/60 font-semibold">{todaySchedule.vibe}</span>
+                  </div>
+                  <h2 class="text-[20px] font-black text-white tracking-tight">{todaySchedule.focus}</h2>
+                  
+                  {/* Progress Bar */}
+                  <div class="mt-3">
+                    <div class="flex justify-between text-[11px] font-bold mb-1">
+                      <span class="text-white/70">Progres Langkah</span>
+                      <span class="text-[#00ACC1]">{totalDone} / {totalSteps} Selesai</span>
+                    </div>
+                    <div class="w-full h-2 bg-white/10 rounded-full overflow-hidden">
+                      <div class="h-full bg-gradient-to-r from-[#00ACC1] to-[#2EC4B6] transition-all duration-500" style={{ width: `${overallPercent}%` }}></div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Morning Routine Section */}
+                <RoutineBlock
+                  title="Rutinitas Pagi"
+                  subtitle="Proteksi & Segarkan Kulit"
+                  badgeColor="bg-amber-50 text-amber-700 border-amber-200"
+                  icon="☀️"
+                  steps={morningSteps}
+                  doneCount={morningDoneCount}
+                  onToggle={toggleStep}
+                  isDone={isStepDone}
+                  products={products}
+                />
+
+                {/* Night Routine Section */}
+                <RoutineBlock
+                  title="Rutinitas Malam"
+                  subtitle="Pembersihan & Deep Repair"
+                  badgeColor="bg-indigo-50 text-indigo-700 border-indigo-200"
+                  icon="🌙"
+                  steps={nightSteps}
+                  doneCount={nightDoneCount}
+                  onToggle={toggleStep}
+                  isDone={isStepDone}
+                  products={products}
+                />
+
+                {/* Active Layering Tip Note */}
+                <div class="rounded-[20px] bg-[#F0FBFB] border border-[#00ACC1]/20 p-4 flex gap-3 items-start">
+                  <div class="w-8 h-8 rounded-full bg-[#00ACC1] text-white flex items-center justify-center font-bold text-sm shrink-0">
+                    💡
+                  </div>
+                  <div class="text-[12px] leading-relaxed">
+                    <div class="font-extrabold text-[#111D20]">Aturan Layering Aman</div>
+                    <div class="text-black/70 mt-0.5">
+                      Gunakan 1 serum aktif (Exfo/Retinol/Acne) di malam hari. Jangan tumpuk 2 aktif bersamaan untuk mencegah iritasi.
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            )}
+
+            {/* TAB 2: JADWAL (SCHEDULE) */}
+            {activeTab === "schedule" && (
+              <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <h2 class="text-[20px] font-extrabold text-[#111D20] tracking-tight">Jadwal Mingguan</h2>
+                    <p class="text-[12px] text-black/60">Rotasi penggunaan bahan aktif agar hasil maksimal</p>
+                  </div>
+                </div>
+
+                <div class="space-y-3">
+                  {WEEKLY_SCHEDULE.map((s) => {
+                    const isToday = s.id === dayIndex;
+                    return (
+                      <div key={s.id} class={`rounded-[22px] border p-4 transition-all ${isToday ? 'bg-[#F0FBFB] border-[#00ACC1] shadow-md ring-2 ring-[#00ACC1]/20' : 'bg-white border-black/[0.06]'}`}>
+                        <div class="flex items-center justify-between">
+                          <div class="flex items-center gap-2">
+                            <span class={`text-[12px] font-black px-3 py-1 rounded-full ${isToday ? 'bg-[#00ACC1] text-white' : 'bg-black/5 text-black/70'}`}>
+                              {s.label}
+                            </span>
+                            {isToday && <span class="text-[10px] font-extrabold text-[#00ACC1] uppercase tracking-wider">HARI INI</span>}
+                          </div>
+                          <span class="text-[12px] font-bold text-[#111D20]">{s.focus}</span>
+                        </div>
+
+                        <p class="text-[11.5px] text-black/60 mt-2">{s.vibe}</p>
+
+                        <div class="mt-3 pt-3 border-t border-black/5 flex flex-wrap gap-2">
+                          <span class="text-[10px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
+                            Pagi: {s.morningSerums.map(id => {
+                              const p = products.find(prod => prod.id === id);
+                              return p ? (p.brand ? `${p.brand} ${p.name}` : p.name) : id;
+                            }).join(" + ")}
+                          </span>
+                          <span class="text-[10px] font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-full border border-indigo-200">
+                            Malam: {s.nightSerums.map(id => {
+                              const p = products.find(prod => prod.id === id);
+                              return p ? (p.brand ? `${p.brand} ${p.name}` : p.name) : id;
+                            }).join(" + ")}
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* TAB 3: SKINCAREKU (COLLECTION & CUSTOM ADD/EDIT) */}
+            {activeTab === "collection" && (
+              <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <h2 class="text-[20px] font-extrabold text-[#111D20] tracking-tight">Koleksi Skincare</h2>
+                    <p class="text-[12px] text-black/60">Kelola merk & kandungan serum favoritmu</p>
+                  </div>
+                  <button 
+                    onClick={() => {
+                      setEditingProduct(null);
+                      setFormData({
+                        brand: "",
+                        name: "",
+                        ingredient: INGREDIENT_RULES[0].name,
+                        when: INGREDIENT_RULES[0].when,
+                        usage: "Setiap Hari",
+                        desc: "",
+                        color: "#00ACC1",
+                        light: "#E8F8FB"
+                      });
+                      setIsModalOpen(true);
+                    }}
+                    class="bg-[#00ACC1] hover:bg-[#0097A7] text-white text-[12px] font-extrabold px-3.5 py-2 rounded-xl shadow-md transition-all active:scale-95 flex items-center gap-1.5"
+                  >
+                    <span>+</span> Tambah Produk
+                  </button>
+                </div>
+
+                {/* Product List Grid */}
+                <div class="grid grid-cols-1 gap-3">
+                  {products.map((p) => (
+                    <div key={p.id} class="rounded-[20px] bg-white border border-black/[0.06] p-4 flex flex-col justify-between shadow-sm relative group">
+                      <div>
+                        <div class="flex items-start justify-between">
+                          <div class="flex items-center gap-2">
+                            <span class="w-3 h-3 rounded-full inline-block" style={{ background: p.color }}></span>
+                            <span class="text-[10px] font-black uppercase tracking-wider text-black/40">
+                              {p.brand || "Kustom"}
+                            </span>
+                          </div>
+                          <div class="flex items-center gap-1.5">
+                            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full border" style={{ background: p.light, color: p.color, borderColor: `${p.color}44` }}>
+                              {p.when}
+                            </span>
+                            <button onClick={() => handleEditProduct(p)} class="text-xs text-black/40 hover:text-black/80 px-1.5 py-0.5">✏️</button>
+                            <button onClick={() => handleDeleteProduct(p.id)} class="text-xs text-red-400 hover:text-red-600 px-1 py-0.5">🗑️</button>
+                          </div>
+                        </div>
+
+                        <h3 class="text-[14px] font-extrabold text-[#111D20] mt-1">{p.brand ? `${p.brand} ${p.name}` : p.name}</h3>
+                        <p class="text-[11.5px] text-black/60 mt-0.5 leading-relaxed">{p.desc}</p>
+                      </div>
+
+                      <div class="mt-3 pt-2.5 border-t border-black/[0.05] flex items-center justify-between text-[10.5px]">
+                        <span class="font-semibold text-black/50">Kandungan: <strong class="text-black/80">{p.ingredient || "Aktif"}</strong></span>
+                        <span class="font-extrabold text-[#00ACC1] bg-[#00ACC1]/10 px-2 py-0.5 rounded-full">{p.usage}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div class="text-center pt-2">
+                  <button onClick={handleResetProducts} class="text-[11px] text-black/40 underline hover:text-black/70">
+                    Reset Katalog Ke Standar
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* TAB 4: TIPS */}
+            {activeTab === "tips" && (
+              <div class="space-y-4">
+                <h2 class="text-[20px] font-extrabold text-[#111D20] tracking-tight">Tips SkinRoutine</h2>
+
+                <div class="rounded-[22px] bg-[#E8F9FB] border border-[#00ACC1]/20 p-4 flex gap-3 items-start">
+                  <div class="w-10 h-10 rounded-full bg-white text-[#00ACC1] flex items-center justify-center font-bold text-lg shadow-sm shrink-0">
+                    💧
+                  </div>
+                  <div class="text-[12px] leading-relaxed">
+                    <div class="font-extrabold text-[#111D20]">Kulit Berminyak Juga Butuh Hidrasi</div>
+                    <div class="text-black/60 mt-1">
+                      Saat kulit dehidrasi, kelenjar minyak akan memproduksi lebih banyak sebasea. Kuncinya: gunakan pembersih lembut, toner hidrasi, dan pelembap tekstur gel.
+                    </div>
+                  </div>
+                </div>
+
+                <div class="space-y-3">
+                  <TipCard index="1" title="Aturan 3 Tetes Serum" desc="Cukup teteskan 2-3 tetes serum ke telapak tangan lalu tepuk halus. Terlalu banyak membuat pori tersumbat." />
+                  <TipCard index="2" title="Wajib Reapply Sunscreen" desc="Sunscreen pagi hari perlu di-reapply setiap 3 jam terutama jika banyak beraktivitas di luar ruangan." />
+                  <TipCard index="3" title="Beri Jeda 60 Detik" desc="Beri jeda 1 menit antar tahapan skincare agar bahan aktif menyerap sempurna tanpa pilling." />
+                </div>
+              </div>
+            )}
+
+          </main>
+
+          {/* Bottom Fixed Navigation Bar */}
+          <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] z-40 bg-[#111D20] border-t border-white/10 px-3 py-2">
+            <div class="flex items-center justify-around">
+              <NavItem active={activeTab === "today"} onClick={() => setActiveTab("today")} icon="☀️" label="Hari Ini" />
+              <NavItem active={activeTab === "schedule"} onClick={() => setActiveTab("schedule")} icon="📅" label="Jadwal" />
+              <NavItem active={activeTab === "collection"} onClick={() => setActiveTab("collection")} icon="🧪" label="Skincareku" />
+              <NavItem active={activeTab === "tips"} onClick={() => setActiveTab("tips")} icon="💡" label="Tips" />
+            </div>
+          </nav>
+
+          {/* Add / Edit Product Modal */}
+          {isModalOpen && (
+            <div class="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
+              <div class="bg-white w-full max-w-md rounded-[24px] p-5 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+                <div class="flex items-center justify-between border-b pb-3">
+                  <h3 class="font-extrabold text-[16px] text-[#111D20]">
+                    {editingProduct ? "Ubah Skincare" : "Tambah Skincare Baru"}
+                  </h3>
+                  <button onClick={() => setIsModalOpen(false)} class="w-7 h-7 rounded-full bg-black/5 flex items-center justify-center text-xs font-bold text-black/60">✕</button>
+                </div>
+
+                <form onSubmit={handleSaveProduct} class="space-y-3 text-[12px]">
+                  <div>
+                    <label class="block font-bold text-black/70 mb-1">Merk / Brand Skincare</label>
+                    <input 
+                      type="text" 
+                      placeholder="Contoh: Somethinc, Skintific, Avoskin..." 
+                      value={formData.brand} 
+                      onChange={e => setFormData({ ...formData, brand: e.target.value })}
+                      class="w-full px-3 py-2 border rounded-xl bg-gray-50 font-medium"
+                    />
+                  </div>
+
+                  <div>
+                    <label class="block font-bold text-black/70 mb-1">Nama Produk *</label>
+                    <input 
+                      type="text" 
+                      required 
+                      placeholder="Contoh: Retinol 1% Refreshing Serum" 
+                      value={formData.name} 
+                      onChange={e => setFormData({ ...formData, name: e.target.value })}
+                      class="w-full px-3 py-2 border rounded-xl bg-gray-50 font-medium"
+                    />
+                  </div>
+
+                  {/* SMART INGREDIENT DROPDOWN */}
+                  <div>
+                    <label class="block font-bold text-[#00ACC1] mb-1 flex items-center justify-between">
+                      <span>Kandungan Utama (Cerdas Waktu Routine)</span>
+                      <span class="text-[10px] text-gray-400 font-normal">Auto-detect</span>
+                    </label>
+                    <select 
+                      value={formData.ingredient} 
+                      onChange={e => handleIngredientChange(e.target.value)}
+                      class="w-full px-3 py-2 border border-[#00ACC1]/40 rounded-xl bg-[#F0FBFB] font-bold text-[#111D20]"
+                    >
+                      {INGREDIENT_RULES.map((rule, idx) => (
+                        <option key={idx} value={rule.name}>
+                          {rule.name} ({rule.when})
+                        </option>
+                      ))}
+                    </select>
+                    <p class="text-[10.5px] text-black/50 mt-1 italic">
+                      {INGREDIENT_RULES.find(r => r.name === formData.ingredient)?.desc}
+                    </p>
+                  </div>
+
+                  <div>
+                    <label class="block font-bold text-black/70 mb-1">Waktu Pemakaian</label>
+                    <select 
+                      value={formData.when} 
+                      onChange={e => setFormData({ ...formData, when: e.target.value })}
+                      class="w-full px-3 py-2 border rounded-xl bg-gray-50 font-medium"
+                    >
+                      <option value="Pagi & Malam">Pagi & Malam</option>
+                      <option value="Pagi">Pagi Saja</option>
+                      <option value="Malam">Malam Saja</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label class="block font-bold text-black/70 mb-1">Frekuensi Pemakaian</label>
+                    <input 
+                      type="text" 
+                      placeholder="Contoh: Setiap Hari / 2x Seminggu" 
+                      value={formData.usage} 
+                      onChange={e => setFormData({ ...formData, usage: e.target.value })}
+                      class="w-full px-3 py-2 border rounded-xl bg-gray-50 font-medium"
+                    />
+                  </div>
+
+                  <div>
+                    <label class="block font-bold text-black/70 mb-1">Catatan Tambahan</label>
+                    <textarea 
+                      rows="2"
+                      placeholder="Contoh: Pakai secukupnya 2 tetes..." 
+                      value={formData.desc} 
+                      onChange={e => setFormData({ ...formData, desc: e.target.value })}
+                      class="w-full px-3 py-2 border rounded-xl bg-gray-50 font-medium"
+                    ></textarea>
+                  </div>
+
+                  <div class="pt-2 flex items-center justify-end gap-2">
+                    <button 
+                      type="button" 
+                      onClick={() => setIsModalOpen(false)}
+                      class="px-4 py-2 rounded-xl text-black/60 font-bold hover:bg-gray-100"
+                    >
+                      Batal
+                    </button>
+                    <button 
+                      type="submit"
+                      class="px-5 py-2 rounded-xl bg-[#00ACC1] text-white font-extrabold shadow-md hover:bg-[#0097A7]"
+                    >
+                      Simpan Produk
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
+
+        </div>
+      );
+    }
+
+    // Helper Component Routine Block
+    function RoutineBlock({ title, subtitle, badgeColor, icon, steps, doneCount, onToggle, isDone, products }) {
+      return (
+        <div class="rounded-[24px] bg-white border border-black/[0.06] overflow-hidden shadow-sm">
+          <div class="px-4 py-3 flex items-center justify-between border-b border-black/[0.04] bg-gray-50/50">
+            <div class="flex items-center gap-2.5">
+              <span class="text-xl">{icon}</span>
+              <div>
+                <h3 class="font-extrabold text-[14px] text-[#111D20] leading-tight">{title}</h3>
+                <p class="text-[11px] text-black/50">{subtitle}</p>
+              </div>
+            </div>
+            <span class={`text-[11px] font-extrabold px-2.5 py-0.5 rounded-full border ${badgeColor}`}>
+              {doneCount} / {steps.length}
+            </span>
+          </div>
+
+          <div class="p-3 space-y-2">
+            {steps.map((step) => {
+              const checked = isDone(step.key);
+              const serum = step.serumId ? products.find(p => p.id === step.serumId) : null;
+              return (
+                <div 
+                  key={step.key}
+                  onClick={() => onToggle(step.key)}
+                  class={`w-full text-left rounded-[16px] border px-3.5 py-3 flex items-center gap-3 transition-all cursor-pointer ${
+                    checked ? 'bg-[#F0FBFB] border-[#00ACC1]/30 opacity-75' : 'bg-white border-black/[0.05] hover:border-black/15'
+                  }`}
+                >
+                  <div class={`w-6 h-6 rounded-full border flex items-center justify-center shrink-0 transition-colors ${
+                    checked ? 'bg-[#00ACC1] border-[#00ACC1] text-white' : 'bg-white border-black/20'
+                  }`}>
+                    {checked ? '✓' : ''}
+                  </div>
+
+                  <div class="flex-1 min-w-0">
+                    <div class={`text-[13px] font-bold leading-tight flex items-center gap-2 ${checked ? 'line-through text-black/50' : 'text-[#111D20]'}`}>
+                      {serum && <span class="w-2.5 h-2.5 rounded-full inline-block" style={{ background: serum.color }}></span>}
+                      {step.label}
+                    </div>
+                    {step.note && <div class="text-[11px] text-black/50 mt-0.5">{step.note}</div>}
+                  </div>
+
+                  {serum && (
+                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0" style={{ background: serum.light, color: serum.color }}>
+                      {serum.brand || serum.name}
+                    </span>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      );
+    }
+
+    // Helper Component Bottom Navigation Item
+    function NavItem({ active, onClick, icon, label }) {
+      return (
+        <button 
+          onClick={onClick}
+          class={`flex flex-col items-center justify-center py-1 px-3 rounded-2xl transition-all ${
+            active ? 'text-[#00ACC1] bg-white/10 font-bold scale-105' : 'text-white/60 hover:text-white'
+          }`}
+        >
+          <span class="text-lg leading-none">{icon}</span>
+          <span class="text-[11px] mt-1">{label}</span>
+        </button>
+      );
+    }
+
+    // Helper Component Tip Card
+    function TipCard({ index, title, desc }) {
+      return (
+        <div class="rounded-[20px] bg-white border border-black/[0.06] p-4 flex gap-3 items-start shadow-sm">
+          <div class="w-7 h-7 rounded-full bg-[#F0FBFB] border border-[#00ACC1]/30 flex items-center justify-center text-[12px] font-extrabold text-[#00ACC1] shrink-0">
+            {index}
+          </div>
+          <div>
+            <h4 class="font-extrabold text-[13px] text-[#111D20]">{title}</h4>
+            <p class="text-[11.5px] leading-relaxed text-black/60 mt-0.5">{desc}</p>
+          </div>
+        </div>
+      );
+    }
+
+    // Render App
+    ReactDOM.createRoot(document.getElementById("root")).render(<SkinRoutineApp />);
+  </script>
+
+  <!-- Service Worker Registration for PWA -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js')
+          .then(reg => console.log('SkinRoutine SW Registered'))
+          .catch(err => console.log('SW Reg Failed:', err));
+      });
+    }
+  </script>
+</body>
+</html>
