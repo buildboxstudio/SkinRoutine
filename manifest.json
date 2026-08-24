@@ -1,12 +1,15 @@
 {
+  "id": "/SkinRoutine/",
   "name": "SkinRoutine",
   "short_name": "SkinRoutine",
-  "description": "Smart Skincare Routine & Tracker App",
+  "description": "Smart Skincare Routine & Tracker App - Made by Buildboxstudio",
   "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#111D20",
   "theme_color": "#00ACC1",
   "orientation": "portrait",
+  "categories": ["beauty", "lifestyle", "health"],
   "icons": [
     {
       "src": "Icon App.png",
