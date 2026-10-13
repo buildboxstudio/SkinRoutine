@@ -167,129 +167,158 @@ const INGREDIENT_RULES = [{
   when: "Pagi & Malam",
   category: "General",
   desc: "Dapat disesuaikan sesuai kebutuhan produk."
+}, {
+  name: "Minoxidil",
+  when: "Pagi & Malam",
+  category: "Hair Growth",
+  desc: "Merangsang pertumbuhan rambut. Gunakan pagi & malam sesuai petunjuk produk."
 }];
 
 // Default Products Catalog
 const DEFAULT_PRODUCTS = [{
   id: "p1",
-  brand: "Somethinc",
+  category: "face-serum",
+  brand: "Hanasui",
   name: "Power MiniPore Serum",
   ingredient: "BHA / Salicylic Acid",
   color: "#FF8A4C",
   light: "#FFF3EB",
   usage: "Setiap Hari",
   desc: "Kontrol minyak & samarkan pori",
-  when: "Pagi & Malam"
+  when: "Pagi & Malam",
+  stepOrder: 40
 }, {
   id: "p2",
-  brand: "Avoskin",
-  name: "Miraculous Refining Serum",
-  ingredient: "AHA (Glycolic / Lactic Acid)",
-  color: "#5B8DEF",
-  light: "#EFF4FF",
-  usage: "2x Seminggu",
-  desc: "Angkat sel mati & komedo",
-  when: "Malam"
-}, {
-  id: "p3",
-  brand: "Skintific",
-  name: "Gentle A-Retinol Serum",
+  category: "face-serum",
+  brand: "Viva",
+  name: "Retinol Serum",
   ingredient: "Retinol / Retinoid",
   color: "#FF5A65",
   light: "#FFF0F1",
   usage: "2x Seminggu",
   desc: "Haluskan tekstur & cegah aging",
-  when: "Malam"
+  when: "Malam",
+  stepOrder: 40,
+  scheduleDays: [0, 3]
 }, {
-  id: "p4",
-  brand: "COSRX",
-  name: "AC Collection BHA Serum",
-  ingredient: "Benzoyl Peroxide",
-  color: "#FF7EB8",
-  light: "#FFF0F6",
-  usage: "3x Seminggu",
-  desc: "Kempeskan jerawat aktif",
-  when: "Malam"
-}, {
-  id: "p5",
-  brand: "The Originote",
-  name: "Ceramella Barrier Serum",
+  id: "p3",
+  category: "face-serum",
+  brand: "Hanasui",
+  name: "Power Barrier Serum",
   ingredient: "Ceramide",
   color: "#14C8B8",
   light: "#E6FAF8",
   usage: "Setiap Malam",
   desc: "Perkuat barrier berminyak sensitif",
-  when: "Pagi & Malam"
+  when: "Malam",
+  stepOrder: 50
 }, {
-  id: "p6",
-  brand: "Azarine",
-  name: "C-White Lightening Serum",
-  ingredient: "Vitamin C / Ascorbic Acid",
+  id: "p4",
+  category: "face-serum",
+  brand: "Hanasui",
+  name: "Power Bright Serum Expert",
+  ingredient: "Niacinamide",
   color: "#6ECFE2",
   light: "#E8F8FB",
   usage: "Setiap Pagi",
   desc: "Cerahkan noda bekas jerawat & proteksi",
-  when: "Pagi"
+  when: "Pagi",
+  stepOrder: 42
+}, {
+  id: "p5",
+  category: "face-serum",
+  brand: "Hanasui",
+  name: "Anti Acne Serum",
+  ingredient: "BHA / Salicylic Acid",
+  color: "#FF7EB8",
+  light: "#FFF0F6",
+  usage: "Setiap Hari",
+  desc: "Kempeskan jerawat aktif",
+  when: "Pagi & Malam",
+  stepOrder: 45
+}, {
+  id: "p6",
+  category: "face-serum",
+  brand: "Hanasui",
+  name: "Vitamin C + Collagen Serum",
+  ingredient: "Vitamin C / Ascorbic Acid",
+  color: "#F5A623",
+  light: "#FFF8E8",
+  usage: "Setiap Hari",
+  desc: "Buat kulit jadi firm & cerah",
+  when: "Pagi",
+  stepOrder: 35
+}, {
+  id: "p7",
+  category: "eye-care",
+  brand: "Cleanface",
+  name: "Brightening Eye Serum",
+  ingredient: "Eyeseryl Peptide, Niacinamide, Matcha Extract, D-Panthenol",
+  color: "#7BC67E",
+  light: "#EFF9EF",
+  usage: "Setiap Hari",
+  desc: "Roll 2-3x di bawah mata, tap pelan dengan jari manis. Jangan digosok.",
+  when: "Pagi & Malam",
+  stepOrder: 30
+}, {
+  id: "p8",
+  category: "haircare",
+  brand: "",
+  name: "Minoxidil Cair",
+  ingredient: "Minoxidil",
+  color: "#9B59B6",
+  light: "#F5EBF9",
+  usage: "2x Sehari",
+  desc: "Gunakan pagi & malam sesuai petunjuk produk. Cuci tangan setelah pemakaian.",
+  when: "Pagi & Malam",
+  stepOrder: 99
 }];
 
-// Weekly Routine Schedule
-const WEEKLY_SCHEDULE = [{
-  id: 0,
-  label: "Minggu",
-  focus: "Reset + Retinol",
-  vibe: "Malam retinol, kulit istirahat total",
-  morningSerums: ["p6", "p1"],
-  nightSerums: ["p3", "p5"]
-}, {
-  id: 1,
-  label: "Senin",
-  focus: "Exfoliasi Ringan",
-  vibe: "Angkat minyak weekend, pori bersih",
-  morningSerums: ["p6", "p1"],
-  nightSerums: ["p2", "p5"]
-}, {
-  id: 2,
-  label: "Selasa",
-  focus: "Anti Acne Care",
-  vibe: "Fokus kempeskan jerawat & redakan peradangan",
-  morningSerums: ["p6", "p1"],
-  nightSerums: ["p4", "p5"]
-}, {
-  id: 3,
-  label: "Rabu",
-  focus: "Retinol Glow",
-  vibe: "Tekstur halus, tingkatkan regenerasi sel",
-  morningSerums: ["p6", "p1"],
-  nightSerums: ["p3", "p5"]
-}, {
-  id: 4,
-  label: "Kamis",
-  focus: "Hydration & Barrier",
-  vibe: "Fokus calming, perkuat pertahanan kulit",
-  morningSerums: ["p6", "p1"],
-  nightSerums: ["p5"]
-}, {
-  id: 5,
-  label: "Jumat",
-  focus: "Exfoliasi Deep Clean",
-  vibe: "Bersihkan komedo menyumbat sebelum weekend",
-  morningSerums: ["p6", "p1"],
-  nightSerums: ["p2", "p5"]
-}, {
-  id: 6,
-  label: "Sabtu",
-  focus: "Gentle Spot Care",
-  vibe: "Perawatan santai weekend & hidrasi",
-  morningSerums: ["p6", "p1"],
-  nightSerums: ["p4", "p5"]
-}];
 const DAYS_MAP = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+
+// Helper: lighten a hex color by mixing with white
+function lightenColor(hex, amount) {
+  if (amount === undefined) amount = 0.88;
+  var r = parseInt(hex.slice(1, 3), 16);
+  var g = parseInt(hex.slice(3, 5), 16);
+  var b = parseInt(hex.slice(5, 7), 16);
+  var lr = Math.round(r + (255 - r) * amount);
+  var lg = Math.round(g + (255 - g) * amount);
+  var lb = Math.round(b + (255 - b) * amount);
+  return "#" + lr.toString(16).padStart(2, "0") + lg.toString(16).padStart(2, "0") + lb.toString(16).padStart(2, "0");
+}
+
+// Helper: get products scheduled for a given day and time, sorted by category then stepOrder
+function getProductsForDay(products, dayIndex, time) {
+  var CAT_ORDER = { "cleanser": 10, "toner": 20, "eye-care": 30, "face-serum": 40, "moisturizer": 60, "sunscreen": 70, "haircare": 99 };
+  return products.filter(function (p) {
+    if (time === "morning" && p.when.indexOf("Pagi") === -1) return false;
+    if (time === "night" && p.when.indexOf("Malam") === -1) return false;
+    if (p.usage === "2x Seminggu" && p.scheduleDays) {
+      return p.scheduleDays.indexOf(dayIndex) !== -1;
+    }
+    return true;
+  }).sort(function (a, b) {
+    var oa = CAT_ORDER[a.category] || 50;
+    var ob = CAT_ORDER[b.category] || 50;
+    if (oa !== ob) return oa - ob;
+    return (a.stepOrder || 50) - (b.stepOrder || 50);
+  });
+}
 function SkinRoutineApp() {
   const [activeTab, setActiveTab] = useState("today");
   const [products, setProducts] = useState(() => {
     try {
-      const saved = localStorage.getItem("skinroutine_products");
-      return saved ? JSON.parse(saved) : DEFAULT_PRODUCTS;
+      var saved = localStorage.getItem("skinroutine_products");
+      if (saved) {
+        var parsed = JSON.parse(saved);
+        // Migrate: if old catalog (no category field), replace with new defaults
+        if (parsed.length > 0 && !parsed[0].category) {
+          return DEFAULT_PRODUCTS;
+        }
+        return parsed;
+      }
+      return DEFAULT_PRODUCTS;
     } catch (e) {
       return DEFAULT_PRODUCTS;
     }
@@ -310,12 +339,14 @@ function SkinRoutineApp() {
   const [formData, setFormData] = useState({
     brand: "",
     name: "",
+    category: "face-serum",
     ingredient: INGREDIENT_RULES[0].name,
     when: INGREDIENT_RULES[0].when,
     usage: "Setiap Hari",
     desc: "",
     color: "#00ACC1",
-    light: "#E8F8FB"
+    light: "#E8F8FB",
+    stepOrder: 40
   });
 
   // Hide Splash Screen on mount
@@ -342,8 +373,27 @@ function SkinRoutineApp() {
   const todayDate = useMemo(() => new Date(), []);
   const dayIndex = todayDate.getDay();
   const dayName = DAYS_MAP[dayIndex];
-  const todaySchedule = WEEKLY_SCHEDULE.find(s => s.id === dayIndex) || WEEKLY_SCHEDULE[0];
   const dateString = todayDate.toISOString().split("T")[0]; // YYYY-MM-DD
+
+  // Derive focus label from today's scheduled products
+  const todayFaceSerums = useMemo(() => {
+    return getProductsForDay(products, dayIndex, "night").filter(p => p.category === "face-serum");
+  }, [products, dayIndex]);
+  const hasRetinolTonight = todayFaceSerums.some(p => p.ingredient.indexOf("Retinol") !== -1);
+  const todaySchedule = useMemo(() => {
+    var focus, vibe;
+    if (hasRetinolTonight) {
+      focus = "Retinol Night";
+      vibe = "Regenerasi sel & anti-aging";
+    } else if (todayFaceSerums.some(p => p.ingredient.indexOf("BHA") !== -1)) {
+      focus = "Anti Acne Care";
+      vibe = "Fokus bersihkan pori & redakan jerawat";
+    } else {
+      focus = "Hydration & Barrier";
+      vibe = "Fokus calming & perkuat skin barrier";
+    }
+    return { focus, vibe };
+  }, [todayFaceSerums]);
 
   // Toggle step completion
   const toggleStep = stepKey => {
@@ -394,12 +444,14 @@ function SkinRoutineApp() {
     setFormData({
       brand: "",
       name: "",
+      category: "face-serum",
       ingredient: INGREDIENT_RULES[0].name,
       when: INGREDIENT_RULES[0].when,
       usage: "Setiap Hari",
       desc: "",
       color: "#00ACC1",
-      light: "#E8F8FB"
+      light: "#E8F8FB",
+      stepOrder: 40
     });
   };
 
@@ -409,12 +461,14 @@ function SkinRoutineApp() {
     setFormData({
       brand: prod.brand || "",
       name: prod.name || "",
+      category: prod.category || "face-serum",
       ingredient: prod.ingredient || INGREDIENT_RULES[0].name,
       when: prod.when || "Pagi & Malam",
       usage: prod.usage || "Setiap Hari",
       desc: prod.desc || "",
       color: prod.color || "#00ACC1",
-      light: prod.light || "#E8F8FB"
+      light: prod.light || "#E8F8FB",
+      stepOrder: prod.stepOrder || 40
     });
     setIsModalOpen(true);
   };
@@ -433,7 +487,14 @@ function SkinRoutineApp() {
     }
   };
 
-  // Morning & Night steps setup
+  // Morning & Night steps setup (dynamic from products)
+  const morningProducts = getProductsForDay(products, dayIndex, "morning");
+  const nightProducts = getProductsForDay(products, dayIndex, "night");
+  const morningHaircare = morningProducts.filter(p => p.category === "haircare");
+  const nightHaircare = nightProducts.filter(p => p.category === "haircare");
+  const morningFace = morningProducts.filter(p => p.category !== "haircare");
+  const nightFace = nightProducts.filter(p => p.category !== "haircare");
+
   const morningSteps = [{
     key: "m_cleanser",
     label: "Gentle Facial Wash",
@@ -442,15 +503,13 @@ function SkinRoutineApp() {
     key: "m_toner",
     label: "Hydrating Toner / Essence",
     note: "Tepuk-tepuk lembut untuk menyiapkan kulit"
-  }, ...todaySchedule.morningSerums.map(pid => {
-    const prod = products.find(p => p.id === pid);
-    return {
-      key: `m_serum_${pid}`,
-      label: prod ? `${prod.brand ? prod.brand + ' ' : ''}${prod.name}` : "Serum Pagi",
-      note: prod ? prod.desc : "Ratakan 2-3 tetes",
-      serumId: pid
-    };
-  }), {
+  }, ...morningFace.map(prod => ({
+    key: `m_prod_${prod.id}`,
+    label: `${prod.brand ? prod.brand + ' ' : ''}${prod.name}`,
+    note: prod.desc,
+    serumId: prod.id,
+    category: prod.category
+  })), {
     key: "m_moisturizer",
     label: "Moisturizer Gel / Light Cream",
     note: "Kunci kelembapan tanpa minyak berlebih"
@@ -458,7 +517,14 @@ function SkinRoutineApp() {
     key: "m_sunscreen",
     label: "Sunscreen SPF 50+ PA++++",
     note: "Wajib 2 ruas jari & reapply tiap 3 jam"
-  }];
+  }, ...morningHaircare.map(prod => ({
+    key: `m_hc_${prod.id}`,
+    label: `${prod.brand ? prod.brand + ' ' : ''}${prod.name}`,
+    note: prod.desc,
+    serumId: prod.id,
+    category: prod.category
+  }))];
+
   const nightSteps = [{
     key: "n_cleanser1",
     label: "First Cleanser (Micellar/Balm)",
@@ -471,19 +537,23 @@ function SkinRoutineApp() {
     key: "n_toner",
     label: "Hydrating Toner",
     note: "Balut kelembapan setelah cuci muka"
-  }, ...todaySchedule.nightSerums.map(pid => {
-    const prod = products.find(p => p.id === pid);
-    return {
-      key: `n_serum_${pid}`,
-      label: prod ? `${prod.brand ? prod.brand + ' ' : ''}${prod.name}` : "Serum Malam",
-      note: prod ? prod.desc : "Ratakan 2-3 tetes",
-      serumId: pid
-    };
-  }), {
+  }, ...nightFace.map(prod => ({
+    key: `n_prod_${prod.id}`,
+    label: `${prod.brand ? prod.brand + ' ' : ''}${prod.name}`,
+    note: prod.desc,
+    serumId: prod.id,
+    category: prod.category
+  })), {
     key: "n_moisturizer",
     label: "Barrier Moisturizer Cream",
     note: "Proteksi barrier & kuncian regenerasi malam"
-  }];
+  }, ...nightHaircare.map(prod => ({
+    key: `n_hc_${prod.id}`,
+    label: `${prod.brand ? prod.brand + ' ' : ''}${prod.name}`,
+    note: prod.desc,
+    serumId: prod.id,
+    category: prod.category
+  }))];
   const morningDoneCount = morningSteps.filter(s => isStepDone(s.key)).length;
   const nightDoneCount = nightSteps.filter(s => isStepDone(s.key)).length;
   const totalSteps = morningSteps.length + nightSteps.length;
@@ -592,10 +662,16 @@ function SkinRoutineApp() {
     className: "text-[12px] text-black/60"
   }, "Rotasi penggunaan bahan aktif agar hasil maksimal"))), /*#__PURE__*/React.createElement("div", {
     className: "space-y-3"
-  }, WEEKLY_SCHEDULE.map(s => {
-    const isToday = s.id === dayIndex;
+   }, DAYS_MAP.map((label, id) => {
+    const dayMorning = getProductsForDay(products, id, "morning").filter(p => p.category === "face-serum");
+    const dayNight = getProductsForDay(products, id, "night").filter(p => p.category === "face-serum");
+    const dayHasRetinol = dayNight.some(p => p.ingredient.indexOf("Retinol") !== -1);
+    const dayHasBHA = dayNight.some(p => p.ingredient.indexOf("BHA") !== -1);
+    const dayFocus = dayHasRetinol ? "Retinol Night" : dayHasBHA ? "Anti Acne Care" : "Hydration & Barrier";
+    const dayVibe = dayHasRetinol ? "Regenerasi sel & anti-aging" : dayHasBHA ? "Fokus bersihkan pori & redakan jerawat" : "Fokus calming & perkuat skin barrier";
+    const isToday = id === dayIndex;
     return /*#__PURE__*/React.createElement("div", {
-      key: s.id,
+      key: id,
       className: `rounded-[22px] border p-4 transition-all ${isToday ? 'bg-[#F0FBFB] border-[#00ACC1] shadow-md ring-2 ring-[#00ACC1]/20' : 'bg-white border-black/[0.06]'}`
     }, /*#__PURE__*/React.createElement("div", {
       className: "flex items-center justify-between"
@@ -603,25 +679,19 @@ function SkinRoutineApp() {
       className: "flex items-center gap-2"
     }, /*#__PURE__*/React.createElement("span", {
       className: `text-[12px] font-black px-3 py-1 rounded-full ${isToday ? 'bg-[#00ACC1] text-white' : 'bg-black/5 text-black/70'}`
-    }, s.label), isToday && /*#__PURE__*/React.createElement("span", {
+    }, label), isToday && /*#__PURE__*/React.createElement("span", {
       className: "text-[10px] font-extrabold text-[#00ACC1] uppercase tracking-wider"
     }, "HARI INI")), /*#__PURE__*/React.createElement("span", {
       className: "text-[12px] font-bold text-[#111D20]"
-    }, s.focus)), /*#__PURE__*/React.createElement("p", {
+    }, dayFocus)), /*#__PURE__*/React.createElement("p", {
       className: "text-[11.5px] text-black/60 mt-2"
-    }, s.vibe), /*#__PURE__*/React.createElement("div", {
+    }, dayVibe), /*#__PURE__*/React.createElement("div", {
       className: "mt-3 pt-3 border-t border-black/5 flex flex-wrap gap-2"
     }, /*#__PURE__*/React.createElement("span", {
       className: "text-[10px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200"
-    }, "Pagi: ", s.morningSerums.map(id => {
-      const p = products.find(prod => prod.id === id);
-      return p ? p.brand ? `${p.brand} ${p.name}` : p.name : id;
-    }).join(" + ")), /*#__PURE__*/React.createElement("span", {
+    }, "Pagi: ", dayMorning.length ? dayMorning.map(p => p.brand ? `${p.brand} ${p.name}` : p.name).join(" + ") : "-"), /*#__PURE__*/React.createElement("span", {
       className: "text-[10px] font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-full border border-indigo-200"
-    }, "Malam: ", s.nightSerums.map(id => {
-      const p = products.find(prod => prod.id === id);
-      return p ? p.brand ? `${p.brand} ${p.name}` : p.name : id;
-    }).join(" + "))));
+    }, "Malam: ", dayNight.length ? dayNight.map(p => p.brand ? `${p.brand} ${p.name}` : p.name).join(" + ") : "-")));
   }))), activeTab === "collection" && /*#__PURE__*/React.createElement("div", {
     className: "space-y-4"
   }, /*#__PURE__*/React.createElement("div", {
@@ -636,12 +706,14 @@ function SkinRoutineApp() {
       setFormData({
         brand: "",
         name: "",
+        category: "face-serum",
         ingredient: INGREDIENT_RULES[0].name,
         when: INGREDIENT_RULES[0].when,
         usage: "Setiap Hari",
         desc: "",
         color: "#00ACC1",
-        light: "#E8F8FB"
+        light: "#E8F8FB",
+        stepOrder: 40
       });
       setIsModalOpen(true);
     },
@@ -662,7 +734,9 @@ function SkinRoutineApp() {
     }
   }), /*#__PURE__*/React.createElement("span", {
     className: "text-[10px] font-black uppercase tracking-wider text-black/40"
-  }, p.brand || "Kustom")), /*#__PURE__*/React.createElement("div", {
+  }, p.brand || "Kustom")), p.category && p.category !== "face-serum" && /*#__PURE__*/React.createElement("span", {
+    className: `text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded-full border ${p.category === 'haircare' ? 'bg-purple-50 text-purple-600 border-purple-200' : 'bg-green-50 text-green-600 border-green-200'}`
+  }, p.category === "haircare" ? "Haircare" : "Eye Care"), /*#__PURE__*/React.createElement("div", {
     className: "flex items-center gap-1.5"
   }, /*#__PURE__*/React.createElement("span", {
     className: "text-[10px] font-bold px-2 py-0.5 rounded-full border",
@@ -804,6 +878,15 @@ function SkinRoutineApp() {
     className: "w-full px-3 py-2 border rounded-xl bg-gray-50 font-medium"
   })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
     className: "block font-bold text-black/70 mb-1"
+  }, "Kategori"), /*#__PURE__*/React.createElement("select", {
+    value: formData.category,
+    onChange: e => setFormData({
+      ...formData,
+      category: e.target.value
+    }),
+    className: "w-full px-3 py-2 border rounded-xl bg-gray-50 font-medium"
+  }, /*#__PURE__*/React.createElement("option", { value: "face-serum" }, "Serum Wajah"), /*#__PURE__*/React.createElement("option", { value: "eye-care" }, "Eye Care"), /*#__PURE__*/React.createElement("option", { value: "haircare" }, "Haircare"), /*#__PURE__*/React.createElement("option", { value: "cleanser" }, "Cleanser"), /*#__PURE__*/React.createElement("option", { value: "toner" }, "Toner"), /*#__PURE__*/React.createElement("option", { value: "moisturizer" }, "Moisturizer"), /*#__PURE__*/React.createElement("option", { value: "sunscreen" }, "Sunscreen"))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "block font-bold text-black/70 mb-1"
   }, "Nama Produk *"), /*#__PURE__*/React.createElement("input", {
     type: "text",
     required: true,
@@ -818,14 +901,17 @@ function SkinRoutineApp() {
     className: "block font-bold text-[#00ACC1] mb-1 flex items-center justify-between"
   }, /*#__PURE__*/React.createElement("span", null, "Kandungan Utama (Cerdas Waktu Routine)"), /*#__PURE__*/React.createElement("span", {
     className: "text-[10px] text-gray-400 font-normal"
-  }, "Auto-detect")), /*#__PURE__*/React.createElement("select", {
+   }, "Auto-detect")), /*#__PURE__*/React.createElement("input", {
+    list: "ingredient-list",
+    type: "text",
     value: formData.ingredient,
     onChange: e => handleIngredientChange(e.target.value),
+    placeholder: "Pilih atau ketik kandungan...",
     className: "w-full px-3 py-2 border border-[#00ACC1]/40 rounded-xl bg-[#F0FBFB] font-bold text-[#111D20]"
-  }, INGREDIENT_RULES.map((rule, idx) => /*#__PURE__*/React.createElement("option", {
+  }), /*#__PURE__*/React.createElement("datalist", { id: "ingredient-list" }, INGREDIENT_RULES.map((rule, idx) => /*#__PURE__*/React.createElement("option", {
     key: idx,
     value: rule.name
-  }, rule.name, " (", rule.when, ")"))), /*#__PURE__*/React.createElement("p", {
+  }))), /*#__PURE__*/React.createElement("p", {
     className: "text-[10.5px] text-black/50 mt-1 italic"
   }, INGREDIENT_RULES.find(r => r.name === formData.ingredient)?.desc)), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
     className: "block font-bold text-black/70 mb-1"
@@ -855,7 +941,7 @@ function SkinRoutineApp() {
     className: "w-full px-3 py-2 border rounded-xl bg-gray-50 font-medium"
   })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
     className: "block font-bold text-black/70 mb-1"
-  }, "Catatan Tambahan"), /*#__PURE__*/React.createElement("textarea", {
+     }, "Catatan Tambahan"), /*#__PURE__*/React.createElement("textarea", {
     rows: "2",
     placeholder: "Contoh: Pakai secukupnya 2 tetes...",
     value: formData.desc,
@@ -864,7 +950,25 @@ function SkinRoutineApp() {
       desc: e.target.value
     }),
     className: "w-full px-3 py-2 border rounded-xl bg-gray-50 font-medium"
-  })), /*#__PURE__*/React.createElement("div", {
+  })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "block font-bold text-black/70 mb-1"
+  }, "Warna Produk"), /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-3"
+  }, /*#__PURE__*/React.createElement("input", {
+    type: "color",
+    value: formData.color,
+    onChange: e => {
+      var c = e.target.value;
+      setFormData(prev => ({
+        ...prev,
+        color: c,
+        light: lightenColor(c)
+      }));
+    },
+    className: "w-10 h-10 rounded-lg border cursor-pointer p-0.5"
+  }), /*#__PURE__*/React.createElement("span", {
+    className: "text-[11px] text-black/50"
+  }, "Warna badge & label di jadwal & koleksi"))), /*#__PURE__*/React.createElement("div", {
     className: "pt-2 flex items-center justify-end gap-2"
   }, /*#__PURE__*/React.createElement("button", {
     type: "button",
@@ -956,7 +1060,9 @@ function RoutineBlock({
       style: {
         background: serum.color
       }
-    }), step.label), step.note && /*#__PURE__*/React.createElement("div", {
+    }), step.label, step.category === "haircare" && /*#__PURE__*/React.createElement("span", {
+      className: "text-[9px] font-black uppercase tracking-wider bg-purple-50 text-purple-600 px-1.5 py-0.5 rounded-full border border-purple-200 shrink-0"
+    }, "Haircare")), step.note && /*#__PURE__*/React.createElement("div", {
       className: "text-[11px] text-black/50 mt-0.5"
     }, step.note)), serum && /*#__PURE__*/React.createElement("span", {
       className: "text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0",
