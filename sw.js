@@ -1,4 +1,4 @@
-const CACHE_NAME = 'skinroutine-v2';
+const CACHE_NAME = 'skinroutine-v1.2';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',

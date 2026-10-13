@@ -408,15 +408,14 @@
       const [activeTab, setActiveTab] = useState("today");
       const [products, setProducts] = useState(() => {
         try {
+          var schema = localStorage.getItem("skinroutine_schema");
           var saved = localStorage.getItem("skinroutine_products");
-          if (saved) {
+          if (saved && schema === "1.2") {
             var parsed = JSON.parse(saved);
-            // Migrate legacy schema lacking category property to current defaults
-            if (parsed.length > 0 && !parsed[0].category) {
-              return DEFAULT_PRODUCTS;
-            }
-            return parsed;
+            if (Array.isArray(parsed) && parsed.length > 0) return parsed;
           }
+          localStorage.setItem("skinroutine_schema", "1.2");
+          localStorage.setItem("skinroutine_products", JSON.stringify(DEFAULT_PRODUCTS));
           return DEFAULT_PRODUCTS;
         } catch (e) {
           return DEFAULT_PRODUCTS;
@@ -1107,8 +1106,17 @@
 
   <script>
     if ('serviceWorker' in navigator) {
+      var refreshing = false;
+      navigator.serviceWorker.addEventListener('controllerchange', function() {
+        if (!refreshing) {
+          refreshing = true;
+          window.location.reload();
+        }
+      });
       window.addEventListener('load', function() {
-        navigator.serviceWorker.register('sw.js').catch(function(){});
+        navigator.serviceWorker.register('sw.js').then(function(reg) {
+          reg.update();
+        }).catch(function(){});
       });
     }
   </script>
