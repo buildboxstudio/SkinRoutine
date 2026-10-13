@@ -1,4 +1,4 @@
-const CACHE_NAME = 'skinroutine-v1';
+const CACHE_NAME = 'skinroutine-v2';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -32,13 +32,20 @@ self.addEventListener('activate', (e) => {
 self.addEventListener('fetch', (e) => {
   const r = e.request;
   if (!r || r.method !== 'GET') return;
-  
+
   e.respondWith(
     (async () => {
       const c = await caches.open(CACHE_NAME);
-      const cached = await c.match(r);
-      if (cached) return cached;
-      return fetch(r);
+      try {
+        const fresh = await fetch(r);
+        if (fresh && fresh.status === 200 && r.url.startsWith(self.location.origin)) {
+          c.put(r, fresh.clone());
+        }
+        return fresh;
+      } catch (err) {
+        const cached = await c.match(r);
+        return cached || Response.error();
+      }
     })()
   );
 });
