@@ -300,6 +300,14 @@
       return "#" + lr.toString(16).padStart(2, "0") + lg.toString(16).padStart(2, "0") + lb.toString(16).padStart(2, "0");
     }
 
+    function getLocalDateString(date) {
+      var d = date || new Date();
+      var y = d.getFullYear();
+      var m = String(d.getMonth() + 1).padStart(2, "0");
+      var day = String(d.getDate()).padStart(2, "0");
+      return y + "-" + m + "-" + day;
+    }
+
     function isScheduledOnDay(p, dayIndex) {
       if (Array.isArray(p.scheduleDays) && p.scheduleDays.length > 0) {
         return p.scheduleDays.indexOf(dayIndex) !== -1;
@@ -424,11 +432,19 @@
       const [completedSteps, setCompletedSteps] = useState(() => {
         try {
           const saved = localStorage.getItem("skinroutine_completed_v1");
-          return saved ? new Set(JSON.parse(saved)) : new Set();
+          if (!saved) return new Set();
+          const arr = JSON.parse(saved);
+          if (!Array.isArray(arr)) return new Set();
+          const minDate = new Date();
+          minDate.setDate(minDate.getDate() - 14);
+          const minDateStr = getLocalDateString(minDate);
+          return new Set(arr.filter(k => typeof k === "string" && k.slice(0, 10) >= minDateStr));
         } catch (e) {
           return new Set();
         }
       });
+
+      const [currentDate, setCurrentDate] = useState(() => new Date());
 
       const [isModalOpen, setIsModalOpen] = useState(false);
       const [isAboutOpen, setIsAboutOpen] = useState(false);
@@ -450,6 +466,23 @@
         const splash = document.getElementById("splash-screen");
         if (splash) splash.classList.add("fade-out");
       }, []);
+
+      useEffect(() => {
+        function checkDayChange() {
+          const now = new Date();
+          if (getLocalDateString(now) !== getLocalDateString(currentDate)) {
+            setCurrentDate(now);
+          }
+        }
+        document.addEventListener("visibilitychange", checkDayChange);
+        window.addEventListener("focus", checkDayChange);
+        const timer = setInterval(checkDayChange, 30000);
+        return () => {
+          document.removeEventListener("visibilitychange", checkDayChange);
+          window.removeEventListener("focus", checkDayChange);
+          clearInterval(timer);
+        };
+      }, [currentDate]);
 
       useEffect(() => {
         function onKeyDown(e) {
@@ -474,10 +507,10 @@
         } catch (e) {}
       }, [completedSteps]);
 
-      const todayDate = useMemo(() => new Date(), []);
+      const todayDate = currentDate;
       const dayIndex = todayDate.getDay();
       const dayName = DAYS_MAP[dayIndex];
-      const dateString = todayDate.toISOString().split("T")[0];
+      const dateString = getLocalDateString(todayDate);
 
       const todayFaceSerums = useMemo(() => {
         return getProductsForDay(products, dayIndex, "night").filter(p => p.category === "face-serum");
